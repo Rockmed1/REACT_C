@@ -19,15 +19,15 @@ import App from "./App";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <App />
     {/* <StarRating /> */}
     {/* <StarRating
-      size={48}
-      color="red"
-      className="test"
-      messages={["bad", "OK", "Good", "Great", "Amazing"]}
-      defaultRating={3}
-    /> */}
-    <App />
+  //   size={48}
+  //   color="red"
+  //   className="test"
+  //   messages={["bad", "OK", "Good", "Great", "Amazing"]}
+  //   defaultRating={3}
+  // /> */}
     {/* <Test /> */}
   </React.StrictMode>
 );
