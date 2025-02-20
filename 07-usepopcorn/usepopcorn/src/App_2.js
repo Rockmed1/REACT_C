@@ -1,21 +1,72 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-import { useMovies } from "./useMovies";
-import { useLocalStorageState } from "./useLocalStorageState";
-import { useKey } from "./useKey";
 
-const KEY = "f11b9a21";
+// const tempMovieData = [
+//   {
+//     imdbID: "tt1375666",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+//   },
+//   {
+//     imdbID: "tt0133093",
+//     Title: "The Matrix",
+//     Year: "1999",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
+//   },
+//   {
+//     imdbID: "tt6751668",
+//     Title: "Parasite",
+//     Year: "2019",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+//   },
+// ];
+
+// const tempWatchedData = [
+//   {
+//     imdbID: "tt1375666",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+//     runtime: 148,
+//     imdbRating: 8.8,
+//     userRating: 10,
+//   },
+//   {
+//     imdbID: "tt0088763",
+//     Title: "Back to the Future",
+//     Year: "1985",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+//     runtime: 116,
+//     imdbRating: 8.5,
+//     userRating: 9,
+//   },
+// ];
+
+const KEY = "f84fc31d";
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 //structural component
 export default function App() {
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  // const [watched, setWatched] = useState([]);
 
-  const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
-  const [watched, setWatched] = useLocalStorageState([], "watched");
+  /*  
+  useEffect(() => console.log("After Initial Render"), []);
+  useEffect(() => console.log("After Every Render"));
+  console.log("During Render");
+  useEffect(() => console.log("After query state change"), [query]); */
 
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
@@ -27,12 +78,62 @@ export default function App() {
 
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
-    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imbdID !== id));
   }
+
+  useEffect(
+    function () {
+      const controller = new AbortController();
+
+      async function fetchMovies() {
+        const URL = `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`;
+        try {
+          setIsLoading(true);
+          setError("");
+          const res = await fetch(URL, { signal: controller.signal });
+
+          if (!res.ok)
+            //in case 400 or other error
+            throw new Error("Something went wrong with fetching the movies");
+
+          const data = await res.json();
+          // incase of bad search input
+          if (data.Response === "False") throw new Error("Movie not found");
+
+          setMovies(data.Search);
+          setError("");
+        } catch (err) {
+          console.log(err.message);
+          if (err.name === "TypeError" && err.message === "Failed to fetch") {
+            //handles internet disconnect
+            setError("Network error: Please check your internet connection.");
+          }
+          if (err.name !== "AbortError") {
+            setError(err.message); // Handles custom error from the 'if (!res.ok)' check
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      }
+
+      if (!query.length) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
+      handleCloseMovie();
+      fetchMovies();
+      //cleanup function to abort all previous api calls when a new one is being initiated
+      return function () {
+        controller.abort();
+      };
+    },
+    [query]
+  );
 
   return (
     <>
@@ -113,18 +214,8 @@ function Logo() {
     </div>
   );
 }
-
 //statefull component
 function Search({ query, setQuery }) {
-  //useRef to manipulate a DOM element
-  const inputElement = useRef(null); //1-create useRef
-
-  useKey("Enter", function () {
-    if (document.activeElement === inputElement.current) return;
-    inputElement.current.focus(); //3-use the useRef
-    setQuery("");
-  });
-
   return (
     <input
       className="search"
@@ -132,11 +223,9 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
-      ref={inputElement} //2-link the Ref
     />
   );
 }
-
 //presentational component
 function NumResults({ movies }) {
   return (
@@ -206,18 +295,9 @@ function Movie({ movie, onSelectMovie }) {
 }
 
 function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
-  const [movie, setMovie] = useState({}); // this will persist and cause rerender
+  const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUseraRating] = useState("");
-
-  const countRef = useRef(0); // this will persist but not cause re-render
-  let count = 0; // this will reset everytime the component renders so it will always have the value of 1 which is the last click
-
-  useEffect(() => {
-    //update user rating everytime the userRating updates if there is user rating
-    userRating && (countRef.current = countRef.current++);
-    userRating && count++;
-  }, [userRating, count]);
 
   const isWatched = watched.map((m) => m.imbdID).includes(selectedId);
   const watchedUserRating = watched.find(
@@ -237,23 +317,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie;
 
-  //wrong way to use hooks :
-  // 1- inside a condition (not in the top level)
-  // if (imdbRating > 8) [isTop, setIsTop] = useState(true);
-  //2- early return: if the first time it ran it registered certain number of hooks (3 state and 3 effect) and that was different when early returned ( only 3 state hooks)
-  // if (imdbRating > 8) return <p>Greatest ever!</p>;
-
-  //3- initial state is only looked at in the begining, when component mounts.
-  // const [isTop, setIsTop] = useState(imdbRating > 8);
-  // console.log(isTop);
-
-  // useEffect(() => {
-  //   setIsTop(imdbRating > 8);
-  // });
-  // this will always be false
-
-  // const [avgRating, setAvgRating] = useState(0);
-
   function handleAdd() {
     const newWatchedMovie = {
       imbdID: selectedId,
@@ -263,16 +326,29 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
       userRating,
-      countRatingDecisions: countRef.current,
     };
 
     onAddWatched(newWatchedMovie);
     onCloseMovie();
-    // setAvgRating(+imdbRating);
-    // setAvgRating((cur) => (cur + userRating) / 2);
   }
-  useKey("Escape", onCloseMovie);
-  //2-fetch movie details
+
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+          console.log("Closing");
+        }
+      }
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
   useEffect(
     function () {
       async function getMovieDetails() {
@@ -288,7 +364,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     [selectedId]
   );
 
-  //3-update title with movie name
   useEffect(
     function () {
       if (!title) return;
@@ -325,7 +400,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
               </p>
             </div>
           </header>
-          {/* <p>{avgRating}</p> */}
+
           <section>
             <div className="rating">
               {!isWatched ? (
@@ -394,7 +469,7 @@ function WatchedMovieList({ watched, onDeleteWatched }) {
       {watched.map((movie) => (
         <WatchedMovie
           movie={movie}
-          key={movie.imbdID}
+          key={movie.imdbID}
           onDeleteWatched={onDeleteWatched}
         />
       ))}
