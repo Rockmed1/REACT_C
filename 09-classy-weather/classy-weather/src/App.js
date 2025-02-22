@@ -98,6 +98,7 @@ function App() {
   useEffect(() => {
     fetchWeather();
     localStorage.setItem("location", location);
+    //todo: add a cleanup function for the api calls
   }, [location]); //TODO: get back to this missing dependency causing infinite rerender
 
   return (
