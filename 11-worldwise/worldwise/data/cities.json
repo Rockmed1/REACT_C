@@ -37,28 +37,16 @@
       "id": 98443197
     },
     {
-      "cityName": "Lisbon",
-      "country": "Portugal",
-      "emoji": "🇵🇹",
-      "date": "2027-10-31T15:59:59.138Z",
-      "notes": "My favorite city so far!",
+      "cityName": "Madinah",
+      "country": "Saudi Arabia",
+      "date": "2025-02-24T17:25:25.102Z",
+      "emoji": "🇸🇦",
+      "notes": "❤️",
       "position": {
-        "lat": 38.727881642324164,
-        "lng": -9.140900099907554
+        "lat": "24.469443333792004",
+        "lng": "39.611744136338984"
       },
-      "id": 7377730385
-    },
-    {
-      "cityName": "Madrid",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2027-07-15T08:22:53.976Z",
-      "notes": "",
-      "position": {
-        "lat": 40.46635901755316,
-        "lng": -3.7133789062500004
-      },
-      "id": 17833306751
+      "id": 98443199
     }
   ]
 }
