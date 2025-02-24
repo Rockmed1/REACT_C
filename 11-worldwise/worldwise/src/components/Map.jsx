@@ -15,15 +15,14 @@ import Button from "./Button";
 import useUrlPosition from "../hooks/useUrlPosition";
 
 function Map() {
-  const { cities } = useCities();
   const [mapPosition, setMapPosition] = useState([40, 0]);
+  const { cities } = useCities();
+  const [mapLat, mapLng] = useUrlPosition();
   const {
     isLoading: isLoadingPosition,
     position: geolocationPosition,
     getPosition,
   } = useGeolocation();
-
-  const [mapLat, mapLng] = useUrlPosition();
 
   useEffect(
     function () {
