@@ -17,9 +17,10 @@ function City() {
   const { id } = useParams();
   const { getCity, currentCity, isLoading } = useCities(id);
 
+  //third usecase of useCallback to prevent infinit loop. make the getcity stable because it will cause a re-render and therfore re-creation
   useEffect(() => {
     getCity(id);
-  }, [id]);
+  }, [id, getCity]);
 
   const { cityName, emoji, date, notes } = currentCity;
 
