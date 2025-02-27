@@ -1,7 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 import { PostProvider, PostContext, usePosts } from "./PostContext";
 import Test from "./Test";
+
+// OPTIMIZE CONTEXT IN CASE 3 ARE TRUE AT ALL TIME:
+//1)state in the context need to change all the time
+//2)the context has many consumers
+//3)the app is acutally slow and laggy
 
 function createRandomPost() {
   return {
@@ -76,14 +81,15 @@ function Results() {
   return <p>🚀 {posts.length} atomic posts found</p>;
 }
 
-function Main() {
+//memo: to prevent unnecessary re-render of children
+const Main = memo(function Main() {
   return (
     <main>
       <FormAddPost />
       <Posts />
     </main>
   );
-}
+});
 
 function Posts() {
   return (
@@ -138,7 +144,7 @@ function List() {
         ))}
       </ul>
 
-      <Test />
+      {/* <Test /> */}
     </>
   );
 }
