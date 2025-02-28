@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 function ToggleSounds({ allowSound, setAllowSound }) {
   return (
     <button
@@ -9,4 +11,18 @@ function ToggleSounds({ allowSound, setAllowSound }) {
   );
 }
 
-export default ToggleSounds;
+export default memo(ToggleSounds);
+
+// export const ToggleSounds = memo(function ToggleSounds({
+//   allowSound,
+//   setAllowSound,
+// }) {
+//   return (
+//     <button
+//       className="btn-sound"
+//       onClick={() => setAllowSound((allow) => !allow)}
+//     >
+//       {allowSound ? "🔈" : "🔇"}
+//     </button>
+//   );
+// });

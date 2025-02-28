@@ -19,9 +19,9 @@ import { lazy, Suspense } from "react";
 // import PageNotFound from "./pages/PageNotFound";
 
 // to reduce the bundle size use lazy() and <Suspense/>
+const HomePage = lazy(() => import("./pages/HomePage"));
 const Product = lazy(() => import("./pages/Product"));
 const Pricing = lazy(() => import("./pages/Pricing"));
-const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/Login"));
 const AppLayout = lazy(() => import("./pages/AppLayout"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound"));
