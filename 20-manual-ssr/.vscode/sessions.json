@@ -1,0 +1,53 @@
+{
+  "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
+  "theme": "dice",
+  "active": "default",
+  "activateOnStartup": true,
+  "noClear": true,
+  "keepExistingTerminals": true,
+
+  "sessions": {
+    "default": [
+      {
+        "name": "zsh",
+        "icon": "console",
+        "color": "terminal.ansiWhite",
+        "commands": [""]
+      },
+      {
+        "name": "yazi",
+        "icon": "diff",
+        "color": "terminal.ansiMagenta",
+        "commands": ["yazi"]
+      },
+      {
+        "name": "git",
+        "autoExecuteCommands": true,
+        "icon": "github",
+        "color": "terminal.ansiRed",
+        "cwd": "/Users/themac/Dev/REACT/Jonas /",
+        "commands": [""]
+      },
+      [
+        {
+          "name": "node",
+          "icon": "server-process",
+          "color": "terminal.ansiGreen",
+          "commands": [""]
+        },
+        {
+          "name": "API",
+          "icon": "arrow-swap",
+          "color": "terminal.ansiBlue",
+          "commands": [""]
+        }
+      ]
+    ],
+    "saved-session": [
+      {
+        "name": "connect",
+        "commands": [""]
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
+  "theme": "tribe",
+  "active": "start",
+  "activateOnStartup": true,
+  "keepExistingTerminals": false,
+  "sessions": {
+    "default": [],
+    "start": [
+      {
+        "name": "start",
+        "cwd": "/Users/themac/Dev/REACT/Jonas /15-redux-intro/redux-intro",
+        "commands": [
+          "react-scripts start"
+        ]
+      },
+      {
+        "name": "build",
+        "cwd": "/Users/themac/Dev/REACT/Jonas /15-redux-intro/redux-intro",
+        "commands": [
+          "react-scripts build"
+        ]
+      },
+      {
+        "name": "test",
+        "cwd": "/Users/themac/Dev/REACT/Jonas /15-redux-intro/redux-intro",
+        "commands": [
+          "react-scripts test"
+        ]
+      },
+      {
+        "name": "eject",
+        "cwd": "/Users/themac/Dev/REACT/Jonas /15-redux-intro/redux-intro",
+        "commands": [
+          "react-scripts eject"
+        ]
+      }
+    ]
+  }
+}
