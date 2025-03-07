@@ -13,7 +13,7 @@ const router = createBrowserRouter([
   {
     // this is the layout route: it has no path. it will have children with paths.
     element: <AppLayout />,
-    // errorElement: <Error />,
+    errorElement: <Error />,
     children: [
       {
         path: "/",

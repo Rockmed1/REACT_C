@@ -41,3 +41,7 @@ export default defineConfig({
 ```
 npm run dev
 ```
+
+## Tailwindcss : follow instructions
+
+https://tailwindcss.com/docs/installation/using-vite
