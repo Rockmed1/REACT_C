@@ -75,7 +75,7 @@ git merge branchName
 
 git remote add origin https://github.com/Rockmed1/forkify-js-course.git
 
-# push the local repository to github:
+# PUSH the LOCAL REPOSITORY to github:
 
 ## push the main branch to the remote repository origin
 

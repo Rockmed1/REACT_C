@@ -11,9 +11,10 @@ const initialStateCustomer = {
   nationalID: "",
   createdAt: "",
 };
+
 //ACTION CREATORS
 
-// We can use this method in order to avoid typing strings in the dispatch function
+// We can use this method in order to avoid typing strings in the dispatch function, but the convention is still 'account/deposit'
 const actions = {
   account_deposit: "account/deposit",
   account_withdraw: "account/withdraw",
@@ -21,7 +22,7 @@ const actions = {
   account_payloan: "account/payLoan",
 };
 
-// The Redux way is creating an action creator function
+// The Redux way is creating an action creator function: functions that simply return actions.
 function deposit(amount) {
   return { type: actions.account_deposit, payload: amount };
 }
@@ -87,6 +88,7 @@ const rootReducer = combineReducers({
   account: accountReducer,
   customer: customerReducer,
 });
+
 const store = createStore(rootReducer);
 
 store.dispatch({ type: actions.account_deposit, payload: 500 });
@@ -106,7 +108,8 @@ console.log(store.getState());
 store.dispatch({ type: actions.account_payloan });
 
 console.log(store.getState());
-console.log("-----------------action functions-----------");
+
+console.log("-----------------action creator functions-----------");
 
 store.dispatch(deposit(500));
 console.log(store.getState());
@@ -121,6 +124,7 @@ store.dispatch(payLoan());
 
 //_______________________
 
+//Action creators:
 function createCustomer(fullName, nationalID) {
   return {
     type: "customer/createCustomer",

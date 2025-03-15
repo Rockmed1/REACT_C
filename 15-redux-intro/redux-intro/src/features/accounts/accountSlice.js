@@ -7,6 +7,10 @@ const initialState = {
   isLoading: false,
 };
 
+//createSlices gives us THREE big benefits:
+//1)Automatically create action creators from our reducers
+//2)No more switch statement in the reducer and the default case is automatically handled
+//3)We can now mutate the state inside the reducers
 const accountSlice = createSlice({
   name: "account",
   initialState,
@@ -47,6 +51,7 @@ export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
 
 export default accountSlice.reducer;
 
+//this is easier than using the RTK way of implementing THUNK. for this to work it has to have the same name ("deposit") and the action type is in the same format: <sliceName>/<reducer> => "account/deposit"
 export function deposit(amount, currency) {
   if (currency === "USD") return { type: "account/deposit", payload: amount };
 

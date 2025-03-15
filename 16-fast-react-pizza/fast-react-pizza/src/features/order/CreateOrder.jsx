@@ -2,6 +2,12 @@ import { useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
+import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
+import { formatCurrency } from "../../utilities/helpers";
+import { fetchAddress } from "../user/userSlice";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -9,48 +15,48 @@ const isValidPhone = (str) =>
     str,
   );
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
-
 function CreateOrder() {
+  const [withPriority, setWithPriority] = useState(false);
+
+  const {
+    username,
+    status: addressStatus,
+    position,
+    address,
+    error: errorAddress,
+  } = useSelector((state) => state.user);
+
+  const isLoadingAddress = addressStatus === "loading";
+
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-
+  const dispatch = useDispatch();
+  //receive the errors in case there are any
   const formErrors = useActionData();
 
-  // const [withPriority, setWithPriority] = useState(false);
-  const cart = fakeCart;
+  const cart = useSelector(getCart);
+  const totalCartPrice = useSelector(getTotalCartPrice);
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
+  const totalPrice = totalCartPrice + priorityPrice;
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let us go!</h2>
 
       {/* <Form method="POST" action="/order/new"> */}
+      {/* no need to add the action to the route as it will automatically match it to the closest route */}
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input type="text" name="customer" required className="input grow" />
+          <input
+            type="text"
+            name="customer"
+            required
+            className="input grow"
+            defaultValue={username}
+          />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -66,7 +72,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           {" "}
           <label className="sm:basis-40">Address</label>
           <div className="grow">
@@ -74,9 +80,29 @@ function CreateOrder() {
               type="text"
               name="address"
               required
+              disabled={isLoadingAddress}
+              defaultValue={address}
               className="input w-full"
             />
+            {addressStatus === "error" && (
+              <p className="mt-2 rounded-md bg-red-200 p-2 text-xs text-red-700">
+                {errorAddress}
+              </p>
+            )}
           </div>
+          {!position.latitude && !position.longitude && (
+            <span className="absolute right-[3px] top-[3px] z-50 md:right-[5px] md:top-[5px]">
+              <Button
+                disabled={isLoadingAddress}
+                type="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(fetchAddress());
+                }}>
+                Get Position
+              </Button>
+            </span>
+          )}
         </div>
 
         <div className="mb-12 flex items-center gap-5">
@@ -85,8 +111,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor="priority" className="font-medium">
             Want to yo give your order priority?
@@ -96,8 +122,20 @@ function CreateOrder() {
         <div>
           {/* to pass data to the action without it being a form field */}
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button disabled={isSubmitting} type="primary">
-            {!isSubmitting ? "Order now" : "Placing order..."}
+          <input
+            type="hidden"
+            name="position"
+            value={
+              position.longitude && position.latitude
+                ? `${position.latitude}, ${position.longitude}`
+                : ""
+            }
+          />
+
+          <Button disabled={isSubmitting || isLoadingAddress} type="primary">
+            {!isSubmitting
+              ? `Order now from ${formatCurrency(totalPrice)}`
+              : "Placing order..."}
           </Button>
         </div>
       </Form>
@@ -106,25 +144,36 @@ function CreateOrder() {
 }
 
 export async function action({ request }) {
+  //to have access to the cart state we use the trick of assigning it to a hidden field in the form .
+  //boilerplate recipe to get form data. the benefit is that we don't need to create and maintain state variables for the input fields or loading state as react-router will do all that behind the scenes for us
+  //___
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   // console.log(data);
+  //____
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === "on",
+    priority: data.priority === "true",
   };
   // console.log(order);
 
   //data validation before processing
   const errors = {};
   if (!isValidPhone(order.phone)) errors.phone = "Enter a valid phone number.";
+
   if (Object.keys(errors).length > 0) return errors;
 
   //if everything is ok create a new order and redirect
-  //   const newOrder = await createOrder(order);
-  //   return redirect(`/order/${newOrder.id}`);
-  return null;
+  const newOrder = await createOrder(order);
+
+  //HACK: **DO NOT OVERUSE- Performance issue**
+  // we are tapping into the store directly because the useSelector is only available inside components not regular functions
+
+  store.dispatch(clearCart());
+  //we use redirect function instead of useNavigate() hook because we can only use hooks inside components.
+  return redirect(`/order/${newOrder.id}`);
+  // return null;//action function has to return something
 }
 
 export default CreateOrder;
