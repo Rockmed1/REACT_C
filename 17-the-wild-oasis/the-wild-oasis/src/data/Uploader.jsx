@@ -35,7 +35,7 @@ async function createGuests() {
   if (error) console.log(error.message);
 }
 
-async function createCabins() {
+async function createEditCabins() {
   const { error } = await supabase.from("cabins").insert(cabins);
   if (error) console.log(error.message);
 }
