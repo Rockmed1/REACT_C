@@ -112,7 +112,7 @@ function Uploader() {
 
     // Bookings need to be created LAST
     await createGuests();
-    await createCabins();
+    await createEditCabins();
     await createBookings();
 
     setIsLoading(false);

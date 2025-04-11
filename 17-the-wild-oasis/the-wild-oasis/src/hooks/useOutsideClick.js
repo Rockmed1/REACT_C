@@ -12,7 +12,7 @@ export function useOutsideClick(handler, listenCapturing = true) {
       }
     }
     // true here is to make the event listener listen not on the capturing/bubbling phase but while the event is moving down the DOM tree
-    document.addEventListener("click", handleClick, true);
+    document.addEventListener("click", handleClick, listenCapturing);
     return () =>
       document.removeEventListener("click", handleClick, listenCapturing);
   }, [handler, listenCapturing]);

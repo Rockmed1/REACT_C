@@ -95,6 +95,7 @@ function Toggle({ id }) {
     useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation(); // this is so that the click does not bubble up and does not get considered a click outside
     const rect = e.target.closest("button").getBoundingClientRect();
 
     setPosition({
@@ -116,7 +117,7 @@ function Toggle({ id }) {
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
 
-  const ref = useOutsideClick(close);
+  const ref = useOutsideClick(close, false); // false here is to capture the click on the bubbling/default phase so that this function does not get called when clicking on the toggle button to close it causing it to close and re-open immediately
 
   if (openId !== id) return null;
 
