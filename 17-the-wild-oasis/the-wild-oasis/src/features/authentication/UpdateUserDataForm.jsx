@@ -11,7 +11,7 @@ import { useUpdateUser } from "./useUpdateUser";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  console.log("UpdateUserDataForm mounted");
+  console.log("UpdateUserDataForm");
 
   const {
     user: {
