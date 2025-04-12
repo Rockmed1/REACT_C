@@ -39,8 +39,6 @@ function Filter({ filteredField, options }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentFilter = searchParams.get(filteredField) || options.at(0).value;
 
-  console.log(filteredField, options);
-
   function handleClick(value) {
     searchParams.set(filteredField, value);
     if (searchParams.get("page")) searchParams.set("page", 1); // reset the pagination to page 1 everytime a filter is applied
