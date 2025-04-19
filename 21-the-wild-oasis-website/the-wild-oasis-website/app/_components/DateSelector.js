@@ -1,3 +1,5 @@
+"use client";
+
 import { isWithinInterval } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -7,7 +9,7 @@ function isAlreadyBooked(range, datesArr) {
     range.from &&
     range.to &&
     datesArr.some((date) =>
-      isWithinInterval(date, { start: range.from, end: range.to })
+      isWithinInterval(date, { start: range.from, end: range.to }),
     )
   );
 }
@@ -27,24 +29,26 @@ function DateSelector() {
   return (
     <div className="flex flex-col justify-between">
       <DayPicker
-        className="pt-12 place-self-center"
+        className="place-self-center pt-12"
         mode="range"
         min={minBookingLength + 1}
         max={maxBookingLength}
-        fromMonth={new Date()}
-        fromDate={new Date()}
-        toYear={new Date().getFullYear() + 5}
+        // fromMonth={new Date()}
+        startMonth={new Date()}
+        // fromDate={new Date()}
+        // toYear={new Date().getFullYear() + 5}
+        // toYear={new Date().getFullYear() + 5}
         captionLayout="dropdown"
         numberOfMonths={2}
       />
 
-      <div className="flex items-center justify-between px-8 bg-accent-500 text-primary-800 h-[72px]">
+      <div className="bg-accent-500 text-primary-800 flex h-[72px] items-center justify-between px-8">
         <div className="flex items-baseline gap-6">
-          <p className="flex gap-2 items-baseline">
+          <p className="flex items-baseline gap-2">
             {discount > 0 ? (
               <>
                 <span className="text-2xl">${regularPrice - discount}</span>
-                <span className="line-through font-semibold text-primary-700">
+                <span className="text-primary-700 font-semibold line-through">
                   ${regularPrice}
                 </span>
               </>
@@ -68,7 +72,7 @@ function DateSelector() {
 
         {range.from || range.to ? (
           <button
-            className="border border-primary-800 py-2 px-4 text-sm font-semibold"
+            className="border-primary-800 border px-4 py-2 text-sm font-semibold"
             onClick={() => resetRange()}
           >
             Clear

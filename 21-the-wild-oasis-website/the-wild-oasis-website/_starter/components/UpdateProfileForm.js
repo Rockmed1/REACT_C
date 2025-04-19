@@ -38,6 +38,7 @@ function UpdateProfileForm({ children }) {
             />
           </div>
         </div>
+
         {children}
 
         <div className="space-y-2">
