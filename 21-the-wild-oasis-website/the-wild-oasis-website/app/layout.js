@@ -12,6 +12,7 @@ const josefin = Josefin_Sans({
 });
 
 import "@/app/_styles/globals.css"; //to make tailwind work
+import { ReservationProvider } from "./_components/ReservationContext";
 
 // this is instead of the <head></head>. place all data in a metadata object instead. this can be placed in the rootlayout here and it will take effect on every page unless it is overwritten on a specific page
 
@@ -37,7 +38,10 @@ export default function RootLayout({ children }) {
       >
         <Header />
         <div className="grid flex-1 px-8 py-12">
-          <main className="mx-auto w-full max-w-7xl">{children}</main>
+          <main className="mx-auto w-full max-w-7xl">
+            {/* That's the only way we can use the context API in NEXTJS. only the client components will be able to use the context*/}
+            <ReservationProvider>{children}</ReservationProvider>
+          </main>
         </div>
       </body>
     </html>
