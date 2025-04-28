@@ -17,6 +17,7 @@ async function SelectCountry({ defaultCountry, name, id, className }) {
       // Here we use a trick to encode BOTH the country name and the flag into the value. Then we split them up again later in the server action
       defaultValue={`${defaultCountry}%${flag}`}
       className={className}
+      key={defaultCountry} // this is to make the component re-render so that the selected is updated
     >
       <option value="">Select country...</option>
       {countries.map((c) => (
