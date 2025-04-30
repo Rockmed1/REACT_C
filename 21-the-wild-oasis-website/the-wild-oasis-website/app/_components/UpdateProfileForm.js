@@ -7,21 +7,21 @@ import { useFormStatus } from "react-dom";
 
 function UpdateProfileForm({ guest, children }) {
   const [count, setCount] = useState();
-
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
 
   // we will use server action inside the form since this is a client component
   return (
     <div>
       <form
-        action={updateGuest}
+        action={updateGuest} // the only thing needed to pass the form data
+        // each form field needs a name so that it shows in the form data
         className="bg-primary-900 flex flex-col gap-6 px-12 py-8 text-lg"
       >
         <div className="space-y-2">
           <label>Full name</label>
           <input
             disabled
-            name="fullName"
+            name="fullName" // needed so that it shows in the form data
             defaultValue={fullName}
             className="bg-primary-200 text-primary-800 w-full rounded-sm px-5 py-3 shadow-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
           />
@@ -31,7 +31,7 @@ function UpdateProfileForm({ guest, children }) {
           <label>Email address</label>
           <input
             disabled
-            name="email"
+            name="email" // needed so that it shows in the form data
             defaultValue={email}
             className="bg-primary-200 text-primary-800 w-full rounded-sm px-5 py-3 shadow-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
           />
@@ -53,7 +53,7 @@ function UpdateProfileForm({ guest, children }) {
         <div className="space-y-2">
           <label htmlFor="nationalID">National ID number</label>
           <input
-            name="nationalID"
+            name="nationalID" // needed so that it shows in the form data
             defaultValue={nationalID}
             className="bg-primary-200 text-primary-800 w-full rounded-sm px-5 py-3 shadow-sm"
           />
@@ -68,7 +68,7 @@ function UpdateProfileForm({ guest, children }) {
 }
 
 function Button() {
-  const { pending } = useFormStatus(); // this could only be used in a component that is rendered by a form, NOT directly in the form component
+  const { pending } = useFormStatus(); // this hook could only be used in a component that is rendered by a form, NOT directly in the form component
   return (
     <button
       className="bg-accent-500 text-primary-800 hover:bg-accent-600 px-8 py-4 font-semibold transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"

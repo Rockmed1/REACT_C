@@ -9,9 +9,9 @@ export const formatDistanceFromNow = (dateStr) =>
     addSuffix: true,
   }).replace("about ", "");
 
-function ReservationCard({ booking }) {
+function ReservationCard({ booking, onDelete }) {
   const {
-    id,
+    id: bookingId,
     guestId,
     startDate,
     endDate,
@@ -74,13 +74,13 @@ function ReservationCard({ booking }) {
         {!isPast(startDate) ? (
           <>
             <Link
-              href={`/account/reservations/edit/${id}`}
+              href={`/account/reservations/edit/${bookingId}`}
               className="group text-primary-300 border-primary-800 hover:bg-accent-600 hover:text-primary-900 flex flex-grow items-center gap-2 border-b px-3 text-xs font-bold uppercase transition-colors"
             >
               <PencilSquareIcon className="text-primary-600 group-hover:text-primary-800 h-5 w-5 transition-colors" />
               <span className="mt-1">Edit</span>
             </Link>
-            <DeleteReservation bookingId={id} />
+            <DeleteReservation bookingId={bookingId} onDelete={onDelete} />
           </>
         ) : null}
       </div>

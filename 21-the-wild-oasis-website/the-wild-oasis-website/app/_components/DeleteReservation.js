@@ -5,7 +5,7 @@ import { deleteReservation } from "../_lib/actions";
 import { useTransition } from "react";
 import SpinnerMini from "./SpinnerMini";
 
-function DeleteReservation({ bookingId }) {
+function DeleteReservation({ bookingId, onDelete }) {
   /* //since this is a server component, one option is to create server action like this:
   function deleteReservation() {
     "use server"; // always need use server directive in a server action function
@@ -13,12 +13,15 @@ function DeleteReservation({ bookingId }) {
   }
  */
 
+  //useTransition will give us an indication that something is happening in the background thus getting us access to isloading...
   // useTransition will allow us to call a server action from a client button without needing a form
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
+    // this method allows us to keep all the actions together in one actions file
     if (confirm("Are you sure you want to delete the reservation?"))
-      startTransition(deleteReservation(bookingId));
+      // startTransition(() => deleteReservation(bookingId));
+      startTransition(() => onDelete(bookingId)); //for optimistic update
   }
 
   return (
