@@ -1,5 +1,5 @@
+import TextExpander from "@/app/_components/TextExpander";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
-import TextExpander from "./TextExpander";
 import Image from "next/image";
 
 function Cabin({ cabin }) {
@@ -23,6 +23,7 @@ function Cabin({ cabin }) {
         </h3>
 
         <p className="text-primary-300 mb-10 text-lg">
+          {/* client component used in server component: the data is coming from the server to the client as prop (children) */}
           <TextExpander>{description}</TextExpander>
         </p>
 

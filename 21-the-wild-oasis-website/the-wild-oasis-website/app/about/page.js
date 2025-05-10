@@ -8,7 +8,7 @@ export const metadata = {
   title: "About",
 };
 
-export const revalidate = 86400;
+export const revalidate = 86400; // this will revalidate the cache once a day
 
 export default async function Page() {
   const cabins = await getCabins();

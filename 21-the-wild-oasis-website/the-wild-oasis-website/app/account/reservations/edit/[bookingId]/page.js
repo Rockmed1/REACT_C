@@ -69,7 +69,7 @@ export default async function Page({ params }) {
 
         <div className="flex items-center justify-end gap-6">
           <SubmitButton pendingLabel="Updating...">
-            {/* only the button need to be a client component because of the useFormStatus() */}
+            {/* only the button need to be a client component because of the useFormStatus() hook */}
             Update reservation
           </SubmitButton>
         </div>

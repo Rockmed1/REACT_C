@@ -1,12 +1,13 @@
 "use client";
 
 // import SelectCountry from "@/app/_components/SelectCountry";
-import { useState } from "react";
 import { updateGuest } from "@/app/_lib/actions";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
 function UpdateProfileForm({ guest, children }) {
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(); // NOT USED IN THIS COMPONENT - dummy example just to make the form a client component to demonstrate how we render a server component inside a client component.
+
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
 
   // we will use server action inside the form since this is a client component
@@ -47,7 +48,7 @@ function UpdateProfileForm({ guest, children }) {
             />
           </div>
         </div>
-
+        {/* this is where we will place the server components; avoiding the error of importing a server component in a client component */}
         {children}
 
         <div className="space-y-2">
@@ -67,14 +68,17 @@ function UpdateProfileForm({ guest, children }) {
   );
 }
 
+// we later encapsulate this into a reusable component SubmitButton
 function Button() {
-  const { pending } = useFormStatus(); // this hook could only be used in a component that is rendered by a form, NOT directly in the form component
+  const { pending, formData, method, action } = useFormStatus(); // this hook could only be used
+  // 1- in a client component
+  // 2- in a component that is rendered by a form, NOT directly in the form component
   return (
     <button
       className="bg-accent-500 text-primary-800 hover:bg-accent-600 px-8 py-4 font-semibold transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
       disabled={pending}
     >
-      {pending ? "Updating..." : "Updade profile"}{" "}
+      {pending ? "Updating..." : "Updade profile"}
     </button>
   );
 }

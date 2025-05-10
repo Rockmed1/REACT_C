@@ -6,6 +6,7 @@ export async function GET(request, { params }) {
   // console.log(par);
 
   const { cabinId } = par;
+  //try catch because the error boundaries we set up will not work here
   try {
     const [cabin, bookedDates] = await Promise.all([
       getCabin(cabinId),

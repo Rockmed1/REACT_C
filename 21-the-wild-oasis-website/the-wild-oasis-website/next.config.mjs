@@ -11,7 +11,7 @@ const nextConfig = {
 
   // output: "export", // to generate a static output to be deployed on cdn
 
-  // this is to control the caching on the front end
+  // this is to control the caching on the front end including opt out
   // experimental: {
   //   staleTimes: {
   //     dynamic: 0,

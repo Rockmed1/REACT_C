@@ -1,11 +1,11 @@
 "use client";
 
+import SignOutButton from "@/app/_components/SignOutButton";
 import {
   CalendarDaysIcon,
   HomeIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
-import SignOutButton from "@/app/_components/SignOutButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -28,7 +28,8 @@ const navLinks = [
 ];
 
 function SideNavigation() {
-  const pathname = usePathname(); // this is a custom hook so it cannot be on a server component and we have to make this a client component
+  const pathname = usePathname(); // this is a react hook,
+  //  so the component cannot be a server component and we have to make it a client component to use the react hook
 
   return (
     <nav className="border-primary-900 border-r">

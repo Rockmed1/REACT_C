@@ -1,5 +1,5 @@
-import UpdateProfileForm from "@/app/_components/UpdateProfileForm";
 import SelectCountry from "@/app/_components/SelectCountry";
+import UpdateProfileForm from "@/app/_components/UpdateProfileForm";
 import { auth } from "@/app/_lib/auth";
 import { getGuest } from "@/app/_lib/data-service";
 
@@ -21,10 +21,11 @@ export default async function Page() {
         Providing the following information will make your check-in process
         faster and smoother. See you soon!
       </p>
+
       {/* using a client component inside a server component in order to have state in the form */}
-      <UpdateProfileForm guest={guest}>
-        {/* passing the server component as a prop into a client component is the only way this is allowed */}
-        <SelectCountry
+      <UpdateProfileForm guest={guest} /* client component */>
+        {/* passing the server component as a prop (children) into a client component is the only way this is allowed */}
+        <SelectCountry /* server component because it has data fetching that we want to keep on the server; importing it here is fine because both page and selectCountry are server components*/
           name="nationality"
           id="nationality"
           className="bg-primary-200 text-primary-800 w-full rounded-sm px-5 py-3 shadow-sm"

@@ -7,7 +7,7 @@ import SubmitButton from "./SubmitButton";
 
 function ReservationForm({ cabin, user }) {
   // CHANGE
-  const { range, resetRange } = useReservation();
+  const { range, resetRange } = useReservation(); //context API
   const { maxCapacity, regularPrice, discount, id: cabinId } = cabin;
   const { from: startDate, to: endDate } = range;
   const numNights = differenceInDays(endDate, startDate);
@@ -21,7 +21,10 @@ function ReservationForm({ cabin, user }) {
     cabinId,
   };
 
-  const createBookingWithData = createBooking.bind(null, bookingData); //bind allows up to set the "this" (first arg) and pass additional arguments and returns a new function, the additional args will be the first args so we have to end the params in the funciton definition with the formData
+  // the Options to pass data to server actions:
+  // option1: hidden field in formData: useful for small piece of data
+  // option2: bind method
+  const createBookingWithData = createBooking.bind(null, bookingData); //bind allows up to set the "this" (first arg) and pass additional arguments and returns a new function, the additional args will be the first arg to the original function so we have to end the params in the funciton definition with the formData
 
   return (
     <div className="scale-[1.01]">
@@ -44,7 +47,7 @@ function ReservationForm({ cabin, user }) {
         // action={createBookingWithData}
         action={async (formData) => {
           await createBookingWithData(formData);
-          resetRange();
+          resetRange(); // we have to call this like that here on the client
         }}
         className="bg-primary-900 flex flex-col gap-5 px-16 py-10 text-lg"
       >

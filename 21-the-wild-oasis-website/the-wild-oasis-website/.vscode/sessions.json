@@ -33,7 +33,7 @@
         "autoExecuteCommands": true,
         "icon": "github",
         "color": "terminal.ansiRed",
-        "cwd": "/Users/themac/Dev/REACT/Jonas /",
+        "cwd": "/Users/themac/Dev/React/",
         "commands": [""]
       }
     ]

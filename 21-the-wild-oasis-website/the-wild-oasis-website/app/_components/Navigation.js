@@ -33,7 +33,7 @@ export default async function Navigation() {
               <img
                 src={session.user.image}
                 alt={session.user.name}
-                referrerPolicy="no-referrer"
+                referrerPolicy="no-referrer" //necessary for google images
                 className="h-8 rounded-full"
               />
               <span>Guest area</span>

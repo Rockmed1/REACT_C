@@ -2,17 +2,24 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+// TO SHARE STATE FROM THE CLIENT TO THE SERVER WE USE THE URL
+
 function Filter() {
+  //this is the recipe to put searchParams in the url to pass state from client to server page component
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const activeFilter = searchParams.get("capacity") ?? "all";
+  const activeFilter = searchParams.get("capacity") ?? "all"; // to pass that to the button to highlight the active button
 
   function handleFilter(filter) {
     const params = new URLSearchParams(searchParams);
+    // const params = new URLSearchParams(); // in this case this could work as well because we are setting it later
+    // this will set the searchParams internally only
     params.set("capacity", filter);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    // this will replace the url in the address bar
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false }); // don't scroll back to the top of the page
   }
 
   return (

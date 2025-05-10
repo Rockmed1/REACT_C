@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+//Context API for reservation data to be available across the app
 
 const ReservationContext = createContext();
 

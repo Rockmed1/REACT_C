@@ -1,7 +1,5 @@
-import Logo from "@/app/_components/Logo";
-import Navigation from "@/app/_components/Navigation";
 import Header from "@/app/_components/Header";
-//FONT: 3 steps to implement
+//FONT: 3 steps to implement fonts
 //1-import : from google or anywhere, even local
 import { Josefin_Sans } from "next/font/google";
 
@@ -39,7 +37,7 @@ export default function RootLayout({ children }) {
         <Header />
         <div className="grid flex-1 px-8 py-12">
           <main className="mx-auto w-full max-w-7xl">
-            {/* That's the only way we can use the context API in NEXTJS. only the client components will be able to use the context*/}
+            {/* That's how we can use the context API in NEXT.js. only the client components will be able to use the context*/}
             <ReservationProvider>{children}</ReservationProvider>
           </main>
         </div>

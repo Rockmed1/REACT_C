@@ -1,11 +1,8 @@
 import Cabin from "@/app/_components/Cabin";
 import Reservation from "@/app/_components/Reservation";
 import Spinner from "@/app/_components/Spinner";
-import TextExpander from "@/app/_components/TextExpander";
 import { getCabin, getCabins } from "@/app/_lib/data-service";
-import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 
-import Image from "next/image";
 import { Suspense } from "react";
 
 // export const metadata = {
@@ -20,18 +17,19 @@ export async function generateMetadata({ params }) {
   return { title: `Cabin ${name}` };
 }
 
+//Static params: to generate static pages for all the possible pages
 export async function generateStaticParams() {
   const cabins = await getCabins();
   const ids = cabins.map((cabin) => ({
     cabinId: String(cabin.id),
   }));
-
   return ids;
 }
 
 export default async function Page({ params }) {
+  //we need to fetch multiple pieces of data for a single page....
+  //THIS CAN CREATE BLOCKING WATERFALL WAIT EFFECT: where the whole page is blocked untill ALL the fetching is complete
   const { cabinId } = await params;
-  //THIS CAN CREATE WATERFALL WAIT EFFECT: where the whole page is blocked untill all the fetching is complete
   const cabin = await getCabin(cabinId);
   // const settings = await getSettings();
   // const bookedDates = await getBookedDatesByCabinId(cabinId);
@@ -45,6 +43,8 @@ export default async function Page({ params }) {
 
   //BETTER to create separate components and stream the to the parent component as they become ready... using suspense
 
+  // for the "cabin" data we could also use request memozation feature and make a db call in each child component that needs it and it will only hit the db once and cache the results. this is a good solution if we had a deeper component tree, but here we are just getting it once and then passing it as props
+
   return (
     <div className="mx-auto mt-8 max-w-6xl">
       <Cabin cabin={cabin} />
@@ -54,6 +54,7 @@ export default async function Page({ params }) {
           Reserve {cabin.name} today. Pay on arrival.
         </h2>
         <Suspense fallback={<Spinner />}>
+          {/* streaming reservation data as it becomes available */}
           <Reservation cabin={cabin} />
         </Suspense>
       </div>

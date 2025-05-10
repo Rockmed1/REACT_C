@@ -1,15 +1,14 @@
 "use client";
 
+import { useReservation } from "@/app/_components/ReservationContext";
 import {
   differenceInDays,
   isPast,
   isSameDay,
   isWithinInterval,
 } from "date-fns";
-import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { useReservation } from "./ReservationContext";
 
 function isAlreadyBooked(range, datesArr) {
   return (
@@ -22,7 +21,7 @@ function isAlreadyBooked(range, datesArr) {
 }
 
 function DateSelector({ cabin, settings, bookedDates }) {
-  const { range, setRange, resetRange } = useReservation();
+  const { range, setRange, resetRange } = useReservation(); //context API
 
   // CHANGE
   // const regularPrice = 23;

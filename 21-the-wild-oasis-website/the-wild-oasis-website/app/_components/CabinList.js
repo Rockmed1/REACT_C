@@ -2,15 +2,20 @@ import { unstable_noStore as noStore } from "next/cache";
 import { getCabins } from "../_lib/data-service";
 import CabinCard from "./CabinCard";
 
-/* moving the data fetching to its own component as we should keep the data fetching as close as possible to where we need the data and also to be able to use suspense */
+/* moving the data fetching to its own component :
+- as we should keep the data fetching as close as possible to where we need the data 
+- and also to be able to use suspense */
 
 async function CabinList({ filter }) {
-  // noStore(); // this can mimic a partial pre-render situation.
+  // option: TO OPT OUT FROM CASHING (make the page dynamic) on the Component level
+  // noStore();
+  // this will be usefull when partial pre-render is available in Next.js. this will make the parent page static with only this component as dynamic.
 
   const cabins = await getCabins();
 
   if (!cabins.length) return null;
 
+  // this filtering should happen in the db server when we make the db call NOT here. we should recieve the data already filtered
   let displayedCabins;
   if (filter === "all") displayedCabins = cabins;
   if (filter === "small")

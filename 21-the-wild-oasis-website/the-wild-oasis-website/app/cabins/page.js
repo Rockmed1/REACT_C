@@ -1,25 +1,30 @@
-import CabinCard from "@/app/_components/CabinCard";
-import CabinList from "../_components/CabinList";
+import CabinList from "@/app/_components/CabinList";
+import Filter from "@/app/_components/Filter";
+import ReservationReminder from "@/app/_components/ReservationReminder";
+import Spinner from "@/app/_components/Spinner";
 import { Suspense } from "react";
-import Spinner from "../_components/Spinner";
-import Filter from "../_components/Filter";
-import ReservationReminder from "../_components/ReservationReminder";
+// import CabinCard from "@/app/_components/CabinCard";
 
+//DYNAMIC RENDERING:
 // export const dynamic = "force-dynamic";
-
 //make the route dynamic and force validate the data (re-fetch)
 // export const revalidate = 0; // value in seconds
-export const revalidate = 3600; // value in seconds // it will be irrelevant if we use searchParams as searchParams will automatically make the page dynamic
+
+//INCREMENTAL STATIC REGENERATION (ISR)
+export const revalidate = 3600; // value in seconds so it will be revalidated once an hour //
+// this will be irrelevant if/when we use searchParams as searchParams will automatically make the page dynamic
+//searchParams is used here to share state from the client to the server (pages only)
 
 //this will override the main metadata
 export const metadata = {
   title: "Cabins",
 };
-// import CabinCard from "@/app/_components/CabinCard";
 
 export default async function Page({ searchParams }) {
-  const { capacity } = await searchParams;
+  //searchParams is used here to share state from the client to the server (pages only)
+  const { capacity } = await searchParams; //this will make the route dynamic
   const filter = capacity ?? "all";
+
   return (
     <div>
       <h1 className="text-accent-400 mb-5 text-4xl font-medium">
@@ -38,7 +43,9 @@ export default async function Page({ searchParams }) {
         <Filter />
       </div>
       <Suspense fallback={<Spinner />} key={filter}>
-        {/* the key here is to make the suspense unique so that we get the spinner everytime the cabinlist loads */}
+        {/* "key={filter}" here is to make the suspense unique so that we get the spinner everytime the cabinlist loads : 
+        without it there will be no feedback while the data is being fetched in the background until it's ready, we will just see stale data then updated data.
+        explaination: fallback will not be shown again if the Suspense is wrapped in a transition. since Next.js wraps page navigations in transitions so we can reset the Suspense boundry with a unique key prop */}
         <CabinList filter={filter} />
         <ReservationReminder />
       </Suspense>

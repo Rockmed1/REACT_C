@@ -11,15 +11,17 @@ const authConfig = {
   ],
   callbacks: {
     authorized({ auth, request }) {
-      //this function returns boolean
-      return !!auth?.user; //returns true if auth.user exists.
+      //this function has to return a boolean
+      //to check if the user is authorized
+      return !!auth?.user; //a nice tricK: returns true if auth.user exists.
     },
     async signIn({ user, account, profile }) {
+      //this function has to return a boolean
+      // this runs before the signup happens. it'a kind of like a middleware: it fires up after the user enters credentials but before the are allowed into the application
       try {
         const existingGuest = await getGuest(user.email);
         if (!existingGuest)
           await createGuest({ email: user.email, fullName: user.name });
-
         return true;
       } catch {
         return false;
@@ -32,9 +34,11 @@ const authConfig = {
     },
   },
   pages: {
+    // to send the user to our custom page instead of the default one
     signIn: "/login",
   },
 };
+
 export const {
   auth,
   signIn,

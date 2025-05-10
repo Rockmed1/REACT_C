@@ -7,10 +7,14 @@
 // 2 - assume the input is unsafe
 
 import { revalidatePath } from "next/cache";
-import { auth, signIn, signOut } from "./auth";
-import { supabase } from "./supabase";
-import { getBookings } from "./data-service";
 import { redirect } from "next/navigation";
+import { auth, signIn, signOut } from "./auth";
+import { getBookings } from "./data-service";
+import { supabase } from "./supabase";
+
+// this is server side programming so we need to make sure:
+// 1 - users are authenticated/authorized
+// 2 - sanitize all data
 
 export async function updateGuest(formData) {
   const session = await auth();
@@ -39,6 +43,8 @@ export async function updateGuest(formData) {
 }
 
 export async function createBooking(bookingData, formData) {
+  //bookingData is the first argument because it'a coming from the bind method and that by default adds it as a first argument.
+
   //1-Authentication
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
@@ -62,7 +68,8 @@ export async function createBooking(bookingData, formData) {
     status: "unconfirmed",
   };
 
-  console.log(newBooking);
+  // console.log(newBooking);
+  //* */ use Zod library for data validation
 
   const { error } = await supabase.from("bookings").insert([newBooking]);
 
@@ -75,7 +82,7 @@ export async function createBooking(bookingData, formData) {
 }
 
 export async function deleteBooking(bookingId) {
-  // // For testing
+  // // For testing : artificial delay
   // await new Promise((res) => setTimeout(res, 4000));
 
   //1-Authentication
@@ -107,6 +114,7 @@ export async function updateReservation(formData) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
+  //3- Building update data
   const updatedData = Object.fromEntries(formData.entries());
   const { bookingId, numGuests, observations: rawObservation } = updatedData;
   const observations = rawObservation.slice(0, 1000); // to protect against too long of input
@@ -124,12 +132,17 @@ export async function updateReservation(formData) {
     .update({ numGuests, observations })
     .eq("id", bookingId);
 
+  //5- Error Handling
   if (error) {
     throw new Error("Reservation could not be updated");
   }
+
+  //6- Revalidating cache
   //to clear the cache and update the page on the client side
-  revalidatePath("account/reservations");
+  revalidatePath("account/reservations"); // this only validated this path not any children paths so we have to revalidate any children paths separately
   revalidatePath(`account/reservations/edit/${bookingId}`);
+
+  //7- Redirecting
   redirect("/account/reservations");
 }
 

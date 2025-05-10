@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Logo from "./Logo";
+// import Logo from "./Logo";
 
 function TextExpander({ children }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -18,7 +18,8 @@ function TextExpander({ children }) {
       >
         {isExpanded ? "Show less" : "Show more"}
       </button>
-      <Logo />
+      {/* <Logo /> */}
+      {/* this <Logo /> instance will be a client component instance here even though it is a server component originally because it is now a child of a client component */}
     </span>
   );
 }
