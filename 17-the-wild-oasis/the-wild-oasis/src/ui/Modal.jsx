@@ -123,6 +123,7 @@ function Window({ children, name }) {
   if (name !== openName) return null;
 
   return createPortal(
+    // this is to create the element outside the tree while maintaining its position in the tree. the reason we might want to do it is to avoid css confilict with the original parent( ex: overflow: hidden)
     <Overlay>
       <StyledModal ref={ref}>
         <Button onClick={close}>
